@@ -1,6 +1,13 @@
 {
     "name": "itwmw/color-difference",
     "description": "Color difference：Din99,CIE76,CIE1994,CIEDE2000,CMC l:c",
+    "authors": [
+        {
+            "name": "MicroDreamTeam",
+            "email": "github@itwmw.com"
+        }
+    ],
+    "license": "Apache-2.0",
     "autoload": {
         "psr-4": {
             "Itwmw\\ColorDifference\\": "src/"
@@ -11,12 +18,6 @@
             "Itwmw\\ColorDifference\\Tests\\": "tests/"
         }
     },
-    "authors": [
-        {
-            "name": "MicroDreamTeam",
-            "email": "github@itwmw.com"
-        }
-    ],
     "keywords": [
         "色差",
         "color difference",
@@ -26,7 +27,6 @@
         "CIE1994",
         "CIE94",
         "CMC",
-        "CMC l:c",
         "CMClc",
         "CIEDE2000",
         "CIE2000",
