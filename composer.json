@@ -1,6 +1,6 @@
 {
     "name": "itwmw/color-difference",
-    "description": "Color difference：Din99,CIE76,CIE1994,CIEDE2000,CMC l:c",
+    "description": "Color difference：Din99,CIE76,CIE1994,CIEDE2000,CMC",
     "autoload": {
         "psr-4": {
             "Itwmw\\ColorDifference\\": "src/"
