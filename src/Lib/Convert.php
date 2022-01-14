@@ -2,6 +2,7 @@
 
 namespace Itwmw\ColorDifference\Lib;
 
+use InvalidArgumentException;
 use Itwmw\ColorDifference\Support\CIEIlluminant;
 use Itwmw\ColorDifference\Support\RGBSpace;
 use JetBrains\PhpStorm\ExpectedValues;
@@ -202,5 +203,20 @@ class Convert
         }
 
         return new Din99($L99, $a99, $b99);
+    }
+
+    public static function hex2Rgb(string $hex): RGB
+    {
+        $hex = str_replace('#', '', $hex);
+        if (6 !== strlen($hex)) {
+            throw new InvalidArgumentException('Expected a valid hex string');
+        }
+
+        $rgb    = new RGB();
+        $rgb->R = base_convert(substr($hex, 0, 2), 16, 10);
+        $rgb->G = base_convert(substr($hex, 2, 2), 16, 10);
+        $rgb->B = base_convert(substr($hex, 4, 2), 16, 10);
+
+        return $rgb;
     }
 }

@@ -66,4 +66,22 @@ class TestColorConversion extends TestCase
         $this->assertSame(60.00833275470, round($lch->c, 10));
         $this->assertSame(0.9548412538721, round($lch->h, 10));
     }
+
+    public function testHex2Rgb()
+    {
+        $rgb = Convert::hex2Rgb('CC00FF');
+        $this->assertSame(204, $rgb->R);
+        $this->assertSame(0, $rgb->G);
+        $this->assertSame(255, $rgb->B);
+
+        $rgb = Convert::hex2Rgb('#DB7093');
+        $this->assertSame(219, $rgb->R);
+        $this->assertSame(112, $rgb->G);
+        $this->assertSame(147, $rgb->B);
+
+        $rgb = Convert::hex2Rgb('ADD8E6');
+        $this->assertSame(173, $rgb->R);
+        $this->assertSame(216, $rgb->G);
+        $this->assertSame(230, $rgb->B);
+    }
 }

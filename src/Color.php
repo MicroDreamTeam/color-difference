@@ -29,19 +29,22 @@ class Color
     protected ?XYZ $xyz = null;
 
     /**
-     * @param Lab|RGB|XYZ $color
+     * @param Lab|RGB|XYZ|string $color Lab,RGB,XYZ or Hex Color
      * @param CIEIlluminant $illuminant Standard illuminant {@see https://en.wikipedia.org/wiki/Standard_illuminant}
-     * @param RGBSpace      $RGBSpace   CIE RGB color space {@see https://en.wikipedia.org/wiki/CIE_1931_color_space#CIE_RGB_color_space}
+     * @param RGBSpace $RGBSpace        CIE RGB color space {@see https://en.wikipedia.org/wiki/CIE_1931_color_space#CIE_RGB_color_space}
      */
     #[Pure]
     public function __construct(
-        Lab|RGB|XYZ $color,
+        Lab|RGB|XYZ|string $color,
         #[ExpectedValues(valuesFromClass: CIEIlluminant::class)]
         protected CIEIlluminant $illuminant = CIEIlluminant::D65,
         #[ExpectedValues(valuesFromClass: RGBSpace::class)]
         protected RGBSpace $RGBSpace = RGBSpace::D65_sRGB
     ) {
-        if ($color instanceof RGB) {
+        if (is_string($color)) {
+            $this->rgb = Convert::hex2Rgb($color);
+            $this->lab = Convert::rgb2lab($this->rgb);
+        } elseif ($color instanceof RGB) {
             $this->rgb = $color;
             $this->lab = Convert::rgb2Lab($color, $illuminant, $RGBSpace);
         } elseif ($color instanceof XYZ) {
