@@ -1,4 +1,11 @@
+<div align="center">
+
 ## Color Difference
+
+![License](https://icon.itwmw.com/badge/License-Apache--2.0-blue)
+![PHP Version Support](https://icon.itwmw.com/badge/PHP-%5E8.1-green?logo=php&logoColor=violet)
+
+</div>
 A library for calculating the perceptual difference between colors (∆E). 
 
 The difference or distance between two colors is a metric of interest in color science. It allows quantified examination of a notion that formerly could only be described with adjectives. Quantification of these properties is of great importance to those whose work is color-critical. Common definitions make use of the Euclidean distance in a device independent color space.
@@ -19,7 +26,7 @@ This library is available on packagist, like so:
 composer require itwmw/color-difference
 ```
 
-##Usage
+## Usage
 The color difference metrics are implemented via the following functions:
 
 - Din99 `getDifferenceDin99(Color $color): float`
@@ -27,8 +34,6 @@ The color difference metrics are implemented via the following functions:
 - CIE94: `getDifferenceCIE94(Color $color, CIE94 $type = CIE94::GraphicArts): float`
 - CIEDE2000: `getDifferenceCIEDE2000(Color $color): float`
 - CMC l:c: `getDifferenceCMC(Color $color, CMC $type = CMC::Imperceptibility): float`
-
-CIE94 and CMC l:c accept an optional parameter adjusting the metric for the kind of quasimetric being evaluated. CIE94 offers an application type choice of either 'graphicArts' or 'textiles' for their eponymous use. CMC l:c offers a threshold choice of either 'acceptability' or 'imperceptibility' that nuances the just-noticeable difference between the colors.
 
 ```php
 use Itwmw\ColorDifference\Color;
@@ -46,4 +51,7 @@ echo('CMC-Acceptability:' . $color->getDifferenceCMC($color2, CMC::Acceptability
 echo('CMC-Imperceptibility:' . $color->getDifferenceCMC($color2, CMC::Imperceptibility) . "\n");
 echo('CIEDE2000:' . $color->getDifferenceCIEDE2000($color2) . "\n");
 ```
+
+CIE94 and CMC l:c accept an optional parameter adjusting the metric for the kind of quasimetric being evaluated. CIE94 offers an application type choice of either 'graphicArts' or 'textiles' for their eponymous use. CMC l:c offers a threshold choice of either 'acceptability' or 'imperceptibility' that nuances the just-noticeable difference between the colors.
+
 
