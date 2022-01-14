@@ -165,13 +165,14 @@ class Convert
         $C = sqrt($a ** 2 + $b ** 2);
 
         // Convert to polar form
-        $h = match (true) {
-            $a >= 0 && 0 == $b => 0,
-            $a < 0  && 0       => 180,
-            0 == $a && $b      => 90,
-            0 == $a && $b < 0  => 270,
-            default            => rad2deg(atan2($b, $a)) + ($a < 0 ? 180 : ($a > 0 && $b < 0 ? 360 : 0))
-        };
+        $h = rad2deg(atan2($b, $a));
+
+        while ($h < 0.0) {
+            $h += 360.0;
+        }
+        while ($h >= 360.0) {
+            $h -= 360.0;
+        }
 
         // L is still L
         return new Lch($lab->L, $C, $h);
