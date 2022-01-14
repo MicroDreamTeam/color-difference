@@ -158,40 +158,25 @@ class Convert
     #[Pure]
     public static function lab2Lch(Lab $lab): Lch
     {
+        $a = $lab->a;
+        $b = $lab->b;
+
         // Chroma
-        $C = sqrt($lab->a ** 2 + $lab->b ** 2);
+        $C = sqrt($a ** 2 + $b ** 2);
 
         // Convert to polar form
-        $h = self::CieLab2Hue($lab->a, $lab->b);
+        $h = match (true) {
+            $a >= 0 && 0 == $b => 0,
+            $a < 0  && 0       => 180,
+            0 == $a && $b      => 90,
+            0 == $a && $b < 0  => 270,
+            default            => rad2deg(atan2($b, $a)) + ($a < 0 ? 180 : ($a > 0 && $b < 0 ? 360 : 0))
+        };
 
         // L is still L
         return new Lch($lab->L, $C, $h);
     }
 
-    private static function CieLab2Hue($a, $b): float|int
-    {
-        $var_bias = 0;
-        if ($a >= 0 && 0 == $b) {
-            return 0;
-        }
-        if ($a < 0 && 0 == $b) {
-            return 180;
-        }
-        if (0 == $a && $b > 0) {
-            return 90;
-        }
-        if (0 == $a && $b < 0) {
-            return 270;
-        }
-        if ($a < 0) {
-            $var_bias = 180;
-        }
-        if ($a > 0 && $b < 0) {
-            $var_bias = 360;
-        }
-        return (rad2deg(atan2($b, $a)) + $var_bias);
-    }
-    
     #[Pure]
     public static function lab2Din99(Lab $lab): Din99
     {
