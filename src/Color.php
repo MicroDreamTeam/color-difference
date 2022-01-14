@@ -323,7 +323,7 @@ class Color
      * also based on the L*C*h color model. Named after the developing committee, their metric is called CMC l:c.
      * The quasimetric has two parameters: lightness (l) and chroma (c),
      * allowing the users to weight the difference based on the ratio of l:c that is deemed appropriate for the application.
-     * Commonly used values are 2:1[20] for acceptability and 1:1 for the threshold of imperceptibility.
+     * Commonly used values are 2:1 for acceptability and 1:1 for the threshold of imperceptibility.
      *
      * @param Color $color
      * @param CMC $type
@@ -334,31 +334,33 @@ class Color
         #[ExpectedValues(valuesFromClass: CMC::class)]
         CMC $type = CMC::Imperceptibility
     ): float {
-        $l1 = $this->getLch();
-        $l2 = $color->getLch();
         $b1 = $this->getLab();
         $b2 = $color->getLab();
+        $c1 = $this->getLch()->c;
+        $c2 = $color->getLch()->c;
 
-        $F = sqrt($l1->c ** 4 / ($l1->c ** 4 + 1900));
-        if ($l1->h >= 164 && $l1->h <= 345) {
-            $T = 0.56 + abs(0.2 * cos(deg2rad($l1->h + 168)));
-        } else {
-            $T = 0.36 + abs(0.4 * cos(deg2rad($l1->h + 35)));
-        }
+        $sl = ($b1->L < 16.0) ? (0.511) : ((0.040975 * $b1->L) / (1.0 + 0.01765 * $b1->L));
+        $sc = (0.0638 * $c1) / (1.0 + 0.0131 * $c1) + 0.638;
+        $h1 = $this->getLch()->h;
 
-        // Calculating the semi-axis of an ellipse
-        $sL = $l1->L < 16 ? 0.511 : (0.040975 * $l1->L) / (1 + 0.01765 * $l1->L);
+        $t = (($h1 >= 164.0) && ($h1 <= 345.0)) ?
+            (0.56 + abs(0.2 * cos((pi() * ($h1 + 168.0)) / 180.0))) :
+            (0.36 + abs(0.4 * cos((pi() * ($h1 + 35.0)) / 180.0)));
 
-        $sC = 0.0638 * $l1->c / (1 + 0.0131 * $l1->c) + 0.638;
+        $c4 = pow($c1, 4);
+        $f  = sqrt($c4 / ($c4 + 1900.0));
+
+        $sh = $sc * ($f * $t + 1.0 - $f);
+
+        $delL = $b1->L - $b2->L;
+        $delC = $c1    - $c2;
+        $delA = $b1->a - $b2->a;
+        $delB = $b1->b - $b2->b;
         
-        $sH = $sC * ($F * $T + 1 - $F);
+        $dH2 = $delA * $delA + $delB * $delB - $delC * $delC;
 
-        $h = sqrt(($b1->a - $b2->a) ** 2 + ($b1->b - $b2->b) ** 2 - ($l1->c - $l2 ->c) ** 2);
-
-        return sqrt(
-            (($l1->L - $l2->L) / ($type->l() * $sL)) ** 2
-            + (($l1->c - $l2->c) / ($type->c() * $sC)) ** 2
-            + ($h / $sH) ** 2
-        );
+        return sqrt(pow($delL / ($type->l() * $sl), 2)
+            + pow($delC / ($type->c() * $sc), 2)
+            + ($dH2 / pow($sh, 2)));
     }
 }

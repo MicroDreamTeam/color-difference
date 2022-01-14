@@ -22,5 +22,16 @@ class TestColorDifference extends TestCase
         $this->assertSame(34.622627, round($color->getDifferenceCMC($color2, CMC::Acceptability), 6));
         $this->assertSame(49.683409, round($color->getDifferenceCMC($color2, CMC::Imperceptibility), 6));
         $this->assertSame(65.897927, round($color->getDifferenceCIEDE2000($color2), 6));
+
+        $color  = new Color('98FB98');
+        $color2 = new Color('#8FBC8F');
+
+        $this->assertSame(16.7598765599, round($color->getDifferenceDin99($color2), 10));
+        $this->assertSame(36.9767474961, round($color->getDifferenceCIE76($color2), 10));
+        $this->assertSame(20.4901875288, round($color->getDifferenceCIE94($color2, CIE94::GraphicArts), 10));
+        $this->assertSame(12.3344046116, round($color->getDifferenceCIE94($color2, CIE94::Textiles), 10));
+        $this->assertSame(16.4593779470, round($color->getDifferenceCIEDE2000($color2), 10));
+        $this->assertSame(17.2937410574, round($color->getDifferenceCMC($color2, CMC::Imperceptibility), 10));
+        $this->assertSame(13.0839125465, round($color->getDifferenceCMC($color2, CMC::Acceptability), 10));
     }
 }
