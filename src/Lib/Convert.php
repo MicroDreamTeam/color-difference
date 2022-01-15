@@ -3,7 +3,7 @@
 namespace Itwmw\ColorDifference\Lib;
 
 use InvalidArgumentException;
-use Itwmw\ColorDifference\Support\CIEIlluminant;
+use Itwmw\ColorDifference\Support\ReferenceWhite;
 use Itwmw\ColorDifference\Support\RGBSpace;
 use JetBrains\PhpStorm\ExpectedValues;
 use JetBrains\PhpStorm\Pure;
@@ -13,19 +13,19 @@ class Convert
     #[Pure]
     public static function rgb2lab(
         RGB $color,
-        #[ExpectedValues(valuesFromClass: CIEIlluminant::class)]
-        CIEIlluminant $illuminant = CIEIlluminant::D65,
+        #[ExpectedValues(valuesFromClass: ReferenceWhite::class)]
+        ReferenceWhite $referenceWhite = ReferenceWhite::D65,
         #[ExpectedValues(valuesFromClass: RGBSpace::class)]
-        RGBSpace $RGBSpace = RGBSpace::D65_sRGB
+        RGBSpace $RGBSpace = RGBSpace::sRGB_D65
     ): Lab {
-        return self::xyz2lab(self::rgb2xyz($color, $RGBSpace), $illuminant);
+        return self::xyz2lab(self::rgb2xyz($color, $RGBSpace), $referenceWhite);
     }
 
     #[Pure]
     public static function rgb2xyz(
         RGB $color,
         #[ExpectedValues(valuesFromClass: RGBSpace::class)]
-        RGBSpace $RGBSpace = RGBSpace::D65_sRGB
+        RGBSpace $RGBSpace = RGBSpace::sRGB_D65
     ): XYZ {
         $R = ($color->R / 255);
         $G = ($color->G / 255);
@@ -63,7 +63,7 @@ class Convert
     public static function xyz2Rgb(
         XYZ $color,
         #[ExpectedValues(valuesFromClass: RGBSpace::class)]
-        RGBSpace $RGBSpace = RGBSpace::D65_sRGB
+        RGBSpace $RGBSpace = RGBSpace::sRGB_D65
     ): RGB {
         // Normalizing for RGB
         $x = $color->X / 100;
@@ -95,13 +95,13 @@ class Convert
     #[Pure]
     public static function xyz2lab(
         XYZ $color,
-        #[ExpectedValues(valuesFromClass: CIEIlluminant::class)]
-        CIEIlluminant $illuminant = CIEIlluminant::D65
+        #[ExpectedValues(valuesFromClass: ReferenceWhite::class)]
+        ReferenceWhite $referenceWhite = ReferenceWhite::D65
     ): Lab {
         // compute xyz, which is XYZ scaled relative to reference white
-        $Y = $color->Y / $illuminant->y();
-        $Z = $color->Z / $illuminant->z();
-        $X = $color->X / $illuminant->x();
+        $Y = $color->Y / $referenceWhite->y();
+        $Z = $color->Z / $referenceWhite->z();
+        $X = $color->X / $referenceWhite->x();
 
         // from CIE standard, which now defines these as a rational fraction
         if ($X > 0.008856) {
@@ -130,8 +130,8 @@ class Convert
     #[Pure]
     public static function lab2Xyz(
         Lab $color,
-        #[ExpectedValues(valuesFromClass: CIEIlluminant::class)]
-        CIEIlluminant $illuminant = CIEIlluminant::D65
+        #[ExpectedValues(valuesFromClass: ReferenceWhite::class)]
+        ReferenceWhite $referenceWhite = ReferenceWhite::D65
     ): XYZ {
         list($L, $a, $b) = array_values(get_object_vars($color));
 
@@ -150,9 +150,9 @@ class Convert
 
         // Normalizing for relative luminance
         $xyz    = new XYZ();
-        $xyz->X = $xR * $illuminant->x();
-        $xyz->Y = $yR * $illuminant->y();
-        $xyz->Z = $zR * $illuminant->z();
+        $xyz->X = $xR * $referenceWhite->x();
+        $xyz->Y = $yR * $referenceWhite->y();
+        $xyz->Z = $zR * $referenceWhite->z();
         return $xyz;
     }
 

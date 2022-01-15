@@ -61,3 +61,63 @@ echo('Weighted Euclidean RGB:' . $color->getDifferenceWeightedEuclideanRGB($colo
 ```
 
 CIE94 and CMC l:c accept an optional parameter adjusting the metric for the kind of quasimetric being evaluated. CIE94 offers an application type choice of either 'graphicArts' or 'textiles' for their eponymous use. CMC l:c offers a threshold choice of either 'acceptability' or 'imperceptibility' that nuances the just-noticeable difference between the colors.
+
+## Reference White
+Use `CIEIlluminant` to specify Reference White for the Color class
+Support:
+
+- A; //Incandescent/tungsten
+- B; //Old direct sunlight at noon
+- C; //Old daylight
+- D50; //ICC profile PCS
+- D55; //Mid-morning daylight
+- D65; //Daylight, sRGB, Adobe-RGB
+- D75; //North sky daylight
+- E; //Equal energy
+- F1; //Daylight Fluorescent
+- F2; //Cool fluorescent
+- F3; //White Fluorescent
+- F4; //Warm White Fluorescent
+- F5; //Daylight Fluorescent
+- F6; //Lite White Fluorescent
+- F7; //Daylight fluorescent, D65 simulator
+- F8; //Sylvania F40, D50 simulator
+- F9; //Cool White Fluorescent
+- F10; //Ultralume 50, Philips TL85
+- F11; //Ultralume 40, Philips TL84
+- F12; //Ultralume 30, Philips TL83
+
+```php
+new Color(new RGB(255, 183, 255), referenceWhite: ReferenceWhite::D65);
+```
+
+## RGB Working Space
+Use `RGBSpace` to specify RGB Working Space for the Color class
+Support:
+
+- Adobe RGB (1998)
+- AppleRGB
+- Best RGB
+- Beta RGB
+- Bruce RGB
+- CIE RGB
+- ColorMatch RGB
+- Don RGB 4
+- ECI RGB
+- Ekta Space PS5
+- NTSC RGB
+- PAL/SECAM RGB
+- ProPhoto RGB
+- SMPTE-C RGB
+- sRGB
+- Wide Gamut RGB
+
+```php
+new Color(new RGB(255, 183, 255), RGBSpace: RGBSpace::sRGB_D65);
+```
+> In general, `RGB Working Space` needs to correspond to `Reference White`.
+
+The default is:
+```php
+new Color(new RGB(255, 183, 255), referenceWhite: ReferenceWhite::D65, RGBSpace: RGBSpace::sRGB_D65);
+```

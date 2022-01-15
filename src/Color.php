@@ -10,7 +10,7 @@ use Itwmw\ColorDifference\Lib\Lch;
 use Itwmw\ColorDifference\Lib\RGB;
 use Itwmw\ColorDifference\Lib\XYZ;
 use Itwmw\ColorDifference\Support\CIE94;
-use Itwmw\ColorDifference\Support\CIEIlluminant;
+use Itwmw\ColorDifference\Support\ReferenceWhite;
 use Itwmw\ColorDifference\Support\CMC;
 use Itwmw\ColorDifference\Support\RGBSpace;
 use JetBrains\PhpStorm\ExpectedValues;
@@ -29,27 +29,26 @@ class Color
     protected ?XYZ $xyz = null;
 
     /**
-     * @param Lab|RGB|XYZ|string $color Lab,RGB,XYZ or Hex Color
-     * @param CIEIlluminant $illuminant Standard illuminant {@see https://en.wikipedia.org/wiki/Standard_illuminant}
-     * @param RGBSpace $RGBSpace        CIE RGB color space {@see https://en.wikipedia.org/wiki/CIE_1931_color_space#CIE_RGB_color_space}
+     * @param Lab|RGB|XYZ|string $color      Lab,RGB,XYZ or Hex Color
+     * @param ReferenceWhite $referenceWhite White points of standard illuminant {@see https://en.wikipedia.org/wiki/Standard_illuminant}
+     * @param RGBSpace $RGBSpace             CIE RGB color space {@see https://en.wikipedia.org/wiki/CIE_1931_color_space#CIE_RGB_color_space}
      */
-    #[Pure]
     public function __construct(
         Lab|RGB|XYZ|string $color,
-        #[ExpectedValues(valuesFromClass: CIEIlluminant::class)]
-        protected CIEIlluminant $illuminant = CIEIlluminant::D65,
+        #[ExpectedValues(valuesFromClass: ReferenceWhite::class)]
+        protected ReferenceWhite $referenceWhite = ReferenceWhite::D65,
         #[ExpectedValues(valuesFromClass: RGBSpace::class)]
-        protected RGBSpace $RGBSpace = RGBSpace::D65_sRGB
+        protected RGBSpace $RGBSpace = RGBSpace::sRGB_D65
     ) {
         if (is_string($color)) {
             $this->rgb = Convert::hex2Rgb($color);
             $this->lab = Convert::rgb2lab($this->rgb);
         } elseif ($color instanceof RGB) {
             $this->rgb = $color;
-            $this->lab = Convert::rgb2Lab($color, $illuminant, $RGBSpace);
+            $this->lab = Convert::rgb2Lab($color, $referenceWhite, $RGBSpace);
         } elseif ($color instanceof XYZ) {
             $this->xyz = $color;
-            $this->lab = Convert::xyz2lab($color, $illuminant);
+            $this->lab = Convert::xyz2lab($color, $referenceWhite);
         } else {
             $this->lab = $color;
         }
@@ -76,7 +75,7 @@ class Color
     public function getXyz(): XYZ
     {
         if (!$this->xyz) {
-            $this->xyz = Convert::lab2Xyz($this->getLab(), $this->illuminant);
+            $this->xyz = Convert::lab2Xyz($this->getLab(), $this->referenceWhite);
         }
 
         return $this->xyz;
