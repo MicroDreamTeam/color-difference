@@ -63,7 +63,7 @@ echo('Weighted Euclidean RGB:' . $color->getDifferenceWeightedEuclideanRGB($colo
 CIE94 and CMC l:c accept an optional parameter adjusting the metric for the kind of quasimetric being evaluated. CIE94 offers an application type choice of either 'graphicArts' or 'textiles' for their eponymous use. CMC l:c offers a threshold choice of either 'acceptability' or 'imperceptibility' that nuances the just-noticeable difference between the colors.
 
 ## Reference White
-Use `CIEIlluminant` to specify Reference White for the Color class
+Use `referenceWhite` to specify Reference White for the Color class
 Support:
 
 - A; //Incandescent/tungsten
