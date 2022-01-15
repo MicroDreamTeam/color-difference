@@ -12,6 +12,8 @@ The difference or distance between two colors is a metric of interest in color s
 
 The following measurements are supported:
 
+- Euclidean
+- Weighted Euclidean
 - DIN99 (2007)
 - CIE76 (1976)
 - CIE94 (1994)
@@ -29,6 +31,9 @@ composer require itwmw/color-difference
 ## Usage
 The color difference metrics are implemented via the following functions:
 
+- Euclidean RGB `getDifferenceEuclideanRGB(Color $color): float`
+- Euclidean Lab `getDifferenceEuclideanLab(Color $color): float`
+- Weighted Euclidean RGB `getDifferenceWeightedEuclideanRGB(Color $color): float`
 - Din99 `getDifferenceDin99(Color $color): float`
 - CIE76: `getDifferenceCIE76(Color $color): float`
 - CIE94: `getDifferenceCIE94(Color $color, CIE94 $type = CIE94::GraphicArts): float`
@@ -50,8 +55,9 @@ echo('CIE94-Textiles:' . $color->getDifferenceCIE94($color2, CIE94::Textiles) . 
 echo('CMC-Acceptability:' . $color->getDifferenceCMC($color2, CMC::Acceptability) . "\n");
 echo('CMC-Imperceptibility:' . $color->getDifferenceCMC($color2, CMC::Imperceptibility) . "\n");
 echo('CIEDE2000:' . $color->getDifferenceCIEDE2000($color2) . "\n");
+echo('Euclidean RGB:' . $color->getDifferenceEuclideanRGB($color2) . "\n");
+echo('Euclidean Lab:' . $color->getDifferenceEuclideanLab($color2) . "\n");
+echo('Weighted Euclidean RGB:' . $color->getDifferenceWeightedEuclideanRGB($color2) . "\n");
 ```
 
 CIE94 and CMC l:c accept an optional parameter adjusting the metric for the kind of quasimetric being evaluated. CIE94 offers an application type choice of either 'graphicArts' or 'textiles' for their eponymous use. CMC l:c offers a threshold choice of either 'acceptability' or 'imperceptibility' that nuances the just-noticeable difference between the colors.
-
-

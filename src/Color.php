@@ -97,6 +97,79 @@ class Color
     }
 
     /**
+     * As most definitions of color difference are distances within a color space, the standard means of determining distances is the Euclidean distance.
+     * If one presently has an RGB (Red, Green, Blue) tuple and wishes to find the color difference,
+     * computationally one of the easiest is to consider R, G, B linear dimensions defining the color space.
+     *
+     * @param XYZ|RGB|Lab|Din99 $color
+     * @return float
+     */
+    protected function euclidean(XYZ|RGB|Lab|Din99 $color): float
+    {
+        $color2 = match ($color::class) {
+            XYZ::class   => $this->getXyz(),
+            RGB::class   => $this->getRgb(),
+            LAB::class   => $this->getLab(),
+            Din99::class => $this->getDin99(),
+        };
+
+        $c1 = array_values(get_object_vars($color));
+        $c2 = array_values(get_object_vars($color2));
+
+        return sqrt(
+            pow($c1[0] - $c2[0], 2)
+            + pow($c1[1] - $c2[1], 2)
+            + pow($c1[2] - $c2[2], 2)
+        );
+    }
+
+    /**
+     * Computes the Euclidean distance between two colours in the RGB color space.
+     *
+     * @param Color $color
+     * @return float
+     */
+    public function getDifferenceEuclideanRGB(Color $color): float
+    {
+        return $this->euclidean($color->getRgb());
+    }
+
+    /**
+     * Computes the Euclidean distance between two colours in the Lab color space.
+     *
+     * @param Color $color
+     * @return float
+     */
+    public function getDifferenceEuclideanLab(Color $color): float
+    {
+        return $this->euclidean($color->getLab());
+    }
+
+    /**
+     * Computes the weighted Euclidean distance between two colours in the RGB color space.
+     *
+     * @param Color $color
+     * @return float
+     */
+    public function getDifferenceWeightedEuclideanRGB(Color $color): float
+    {
+        $c1 = $this->getRgb();
+        $c2 = $color->getRgb();
+
+        $weightMeanR = ($c1->R + $c2->R) / 2;
+
+        $deltaR = $c1->R - $c2->R;
+        $deltaG = $c1->G - $c2->G;
+        $deltaB = $c1->B - $c2->B;
+
+        return sqrt(
+            (2 + $weightMeanR / 256) * pow($deltaR, 2)
+            + 4 * pow($deltaG, 2)
+            + (2 + (255 - $weightMeanR) / 256) * pow($deltaB, 2)
+        );
+    }
+
+    /**
      * The DIN99 color space system is a further development of the CIELAB color space system developed by the
      * FNF / FNL 2 Colorimetry Working Committee .
      * The calculation is described in DIN 6176:
@@ -110,14 +183,7 @@ class Color
      */
     public function getDifferenceDin99(Color $color): float
     {
-        $d1 = $this->getDin99();
-        $d2 = $color->getDin99();
-
-        return sqrt(
-            ($d2->L99 - $d1->L99) ** 2
-            + ($d2->a99 - $d1->a99) ** 2
-            + ($d2->b99 - $d1->b99) ** 2
-        );
+        return $this->euclidean($color->getDin99());
     }
 
     /**

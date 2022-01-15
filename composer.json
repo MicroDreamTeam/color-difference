@@ -30,7 +30,8 @@
         "CMClc",
         "CIEDE2000",
         "CIE2000",
-        "CIE00"
+        "CIE00",
+        "Delta E"
     ],
     "require": {
         "php": "^8.1"
